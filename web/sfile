@@ -1,0 +1,40 @@
+#!/usr/bin/perl
+
+package sfile;
+
+@dat=($day, $month, $year) = (localtime)[3,4,5];
+
+$t1=@dat[0];
+$t2=@dat[1]+1;
+$t3=@dat[2]+1900;
+
+$t0=0;
+
+if ( $t1 < 10 )
+{
+$tt=$t0.$t1;
+}
+
+else
+{
+$tt=$t1;
+}
+
+if ( $t2 < 10 )
+{
+$dd=$t0.$t2;
+}
+
+else
+{
+$dd=$t2;
+}
+
+
+
+$fullpath=join('-',$t3,$dd,$tt);
+
+#print $truedat;
+#print "\n";
+
+1;

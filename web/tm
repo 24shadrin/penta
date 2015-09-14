@@ -1,0 +1,62 @@
+#!/bin/sh
+
+lc=/var/www/web/lock/lock
+
+if [ -f $lc ]; then 
+#echo "Process already running. Please wait and try again later."
+exit
+    else
+{
+date > $lc
+
+a1=$(date | awk '{print $6}')
+a3=$(date | awk '{print $3}')
+mon=$(date | awk '{print $2}')
+
+case $mon in
+Jan) a2=01 ;;
+Feb) a2=02 ;;
+Mar) a2=03 ;;
+Apr) a2=04 ;;
+May) a2=05 ;;
+Jun) a2=06 ;;
+Jul) a2=07 ;;
+Aug) a2=08 ;;
+Sep) a2=09 ;;
+Oct) a2=10 ;;
+Nov) a2=11 ;;
+Dec) a2=12 ;;
+esac
+
+case $a3 in
+1) a3=01 ;;
+2) a3=02 ;;
+3) a3=03 ;;
+4) a3=04 ;;
+5) a3=05 ;;
+6) a3=06 ;;
+7) a3=07 ;;
+8) a3=08 ;;
+9) a3=09 ;;
+esac
+
+path=$a1-$a2-$a3
+cd /var/www/web/fortm && rm /var/www/web/fortm/*
+cd /var/www/web/timelapse && rm /var/www/web/timelapse/*
+fpath=/home/pi/beward/penta/$path/beward_penta/1
+
+
+cd $fpath && ls -t -r |grep jpg |xargs cp --target-directory=/var/www/web/fortm
+
+cp /etc/mysc/web/rename /var/www/web/fortm/rename
+
+cd /var/www/web/fortm && /var/www/web/fortm/rename 
+
+avconv -y -r 10 -i %06d.jpg -r 10 -vcodec mjpeg -qscale 1  /var/www/web/timelapse/today.avi
+
+file=/var/www/web/timelapse/today.avi
+
+
+rm $lc
+}
+fi
