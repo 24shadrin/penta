@@ -20,15 +20,7 @@
     }
     $subject = $FORM{dropdown};
 
-#print "Content-type:text/html\r\n\r\n";
-#print "<html>";
-#print "<head>";
-#print "<title>Dropdown Box - Sixth CGI Program</title>";
-#print "</head>";
-#print "<body>";
-#print "<h2> Selected Subject is $subject</h2>";
-#print "</body>";
-#print "</html>";
+#$subject = 5;
 
 require "sfile";
     print "Content-Type: text/html\n\n";
@@ -40,39 +32,40 @@ require "sfile";
 
 $truedat=$sfile::fullpath;
 
-$p="/home/pi/beward/penta/$truedat/beward_penta/1";
 
 $url="index.html";
 
-system "cd /var/www/web/jpg && rm /var/www/web/jpg/*";
+use File::Copy;
 
-$path="jpg";
+require "sfile";
+$truedat=$sfile::fullpath;
+$d_path="/var/www/web/jpg";
 
-system "cd $p && ls  $p |grep jpg |tail -n $subject |xargs cp  --target-directory=/var/www/web/jpg";
+$p="/home/pi/beward/penta/$truedat/beward_penta/1/*.jpg";
+#записываем список файлов источника в массив
+@flist = glob $p;
 
-system "ls  /var/www/web/jpg > /var/www/web/list";
 
-print "<p><a href=$url> <-back</a></p>";
-
-open(filo, "list") || die "file daz not eksist";
-while ($line = <filo>)
-{
-#print "<img src=$path/$line width=20% align=right>";
-print "<img src=$path/$line width=20%>";
-
-#print $line;
+#обнуление счетчика. вычисляем количество элементов в массиве
+$i=0;
+$x=$#flist+1;
+    if ($subject == 0) {
+    $j=0;
 }
-close(filo);
+else
+{
+$j=$x-$subject;
+}
 
+print "<p><a href=$url> <--back</a></p>";
 print "\n";
+    while ($j<$x) {
+@mas=split("/",@flist[$j]);
+$str=@mas[8];
+copy ("@flist[$j]","$d_path/$str" || die "Error $!");
+$j++;
+print "<img src=jpg/$str width=20%>";
+}
 
-print "<br>";
-"\n";
-
-print "<p><a href=$url> <-back</a></p>";
-
-    print "</body>";
-    print "</html>";
-print "\n";
-
-1;
+    print "<p><a href=$url> <--back</a></p>";
+    print "\n";
